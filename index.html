@@ -5,40 +5,31 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Grabovoi codes</title>
+<title>Grabovoi code</title>
 
 <style>
     body {
-        font-family: -apple-system, Arial, sans-serif;
+        font-family: Arial, sans-serif;
         text-align: center;
-        margin-top: 20px;
-        background-color: #f8f9fa;
+        margin-top: 30px;
+        transition: background-color 0.005s ease; /* ✅ smooth color change */
     }
 
-    /* Message */
     #message {
         font-size: clamp(16px, 4vw, 20px);
         margin-bottom: 10px;
         height: 24px;
-        color: #444;
     }
 
-   
-/* Numbers */
     #numbers {
-        color: black;
+        color: white; /* ✅ always blue */
         font-size: clamp(24px, 8vw, 60px);
         margin: 15px;
     }
 
-    #numbers span {
-        margin: 0 5px;
-    }
-
-    /* Controls */
     #controls {
-        margin-top: 20px;
-        transition: opacity 0.4s ease;
+        margin-top: 30px;
+        transition: opacity 0.5s;
     }
 
     .hidden {
@@ -50,28 +41,23 @@
         font-size: clamp(12px, 4vw, 16px);
         padding: clamp(6px, 2vw, 12px);
         margin: 5px;
-        border-radius: 12px;
-        border: none;
-        background-color: #e0e0e0;
         cursor: pointer;
-    }
-
-    button:active {
-        transform: scale(0.95);
+        border-radius: 10px;
     }
 
     input {
         font-size: clamp(12px, 4vw, 16px);
         padding: 5px;
-        width: 110px;
+        width: 120px;
         text-align: center;
-        border-radius: 8px;
-        border: 1px solid #ccc;
     }
 
-    /* Timer active */
+    #timerBtn {
+        background-color: #eee;
+    }
+
     #timerBtn.active {
-        background-color: #34C759;
+        background-color: #4CAF50;
         color: white;
     }
 </style>
@@ -79,14 +65,14 @@
 
 <body>
 
-<h3></h3>
+<h2></h2>
 
 <div id="message"></div>
 <div id="numbers"></div>
 
 <div id="controls">
     <button onclick="previous()">⬅️</button>
-    <button id="timerBtn" onclick="toggleTimer()">⏱️ Auto</button>
+    <button id="timerBtn" onclick="toggleTimer()">⏱️ Automatique</button>
     <button onclick="next()">➡️</button>
 
     <br><br>
@@ -96,7 +82,7 @@
 </div>
 
 <script>
-            const numbers = [514,88888488888,918948181,1814321,5186923,519606901319,8240692,396815,918197185,88889888878888,49819431947,1488514,5148584,5862043,210250300,2937853,697706258,5893240,9988771,54321893,5185213,8124567,8125432,5484548,1456891,8851464,598617918491,8686694,5749285,498217218227,8121596];
+       const numbers = [514,88888488888,918948181,1814321,5186923,519606901319,8240692,396815,918197185,88889888878888,49819431947,1488514,5148584,5862043,210250300,2937853,697706258,5893240,9988771,54321893,5185213,8124567,8125432,5484548,1456891,8851464,598617918491,8686694,5749285,498217218227,8121596];
 
     let index = 0;
     const displayCount = 1;
@@ -106,8 +92,8 @@
     let isTimerRunning = false;
     let hideControlsTimeout;
 
-    // ✅ 7 modern colors (no gradient)
-    const colors = [
+    // ✅ 7 fixed background colors (red → purple)
+    const bgColors = [
         "#FF3B30", // red
         "#FF9500", // orange
         "#FFCC00", // yellow
@@ -117,10 +103,10 @@
         "#AF52DE"  // purple
     ];
 
-    let colorIndex = 0;
+    let bgColorIndex = 0;
 
     function getMessage(slice) {
-if (slice.includes(514)) return "1 - Rajeunissment";
+              if (slice.includes(514)) return "1 - Rajeunissment";
  if (slice.includes(88888488888)) return "2 - Rétablir la santé";
 if (slice.includes(918948181)) return "3 - Auto-guérison";
         if (slice.includes(1814321)) return "4 - Santé parfaite";
@@ -157,20 +143,12 @@ if (slice.includes(8121596)) return "31 - Muscles";
 
     function showNumbers() {
         const slice = numbers.slice(index, index + displayCount);
-        const numbersDiv = document.getElementById("numbers");
 
-        numbersDiv.innerHTML = "";
+        // ✅ Change background color every time numbers change
+        document.body.style.backgroundColor = bgColors[bgColorIndex];
+        bgColorIndex = (bgColorIndex + 1) % bgColors.length;
 
-        slice.forEach((num) => {
-            const span = document.createElement("span");
-            span.innerText = num;
-
-            span.style.color = colors[colorIndex];
-
-            numbersDiv.appendChild(span);
-
-            colorIndex = (colorIndex + 1) % colors.length;
-        });
+        document.getElementById("numbers").innerText = slice.join(", ");
 
         const messageDiv = document.getElementById("message");
 
@@ -182,7 +160,7 @@ if (slice.includes(8121596)) return "31 - Muscles";
             clearTimeout(messageTimeout);
             messageTimeout = setTimeout(() => {
                 messageDiv.innerText = "";
-            }, 3000);
+            }, 5000);
         }
 
         if (!isTimerRunning) {
@@ -193,14 +171,24 @@ if (slice.includes(8121596)) return "31 - Muscles";
     function next() {
         stopTimer();
 
-        index = (index + displayCount) % numbers.length;
+        if (index + displayCount < numbers.length) {
+            index += displayCount;
+        } else {
+            index = 0;
+        }
+
         showNumbers();
     }
 
     function previous() {
         stopTimer();
 
-        index = (index - displayCount + numbers.length) % numbers.length;
+        if (index - displayCount >= 0) {
+            index -= displayCount;
+        } else {
+            index = numbers.length - displayCount;
+        }
+
         showNumbers();
     }
 
@@ -221,12 +209,17 @@ if (slice.includes(8121596)) return "31 - Muscles";
             isTimerRunning = true;
 
             btn.classList.add("active");
-            btn.innerText = "⏸️ Stop";
+            btn.innerText = "⏸️ En marche";
 
             controls.classList.add("hidden");
 
             timerInterval = setInterval(() => {
-                index = (index + displayCount) % numbers.length;
+                if (index + displayCount < numbers.length) {
+                    index += displayCount;
+                } else {
+                    index = 0;
+                }
+
                 showNumbers();
             }, timerValue);
         }
@@ -251,14 +244,12 @@ if (slice.includes(8121596)) return "31 - Muscles";
 
         hideControlsTimeout = setTimeout(() => {
             controls.classList.add("hidden");
-        }, 10000);
+        }, 5000);
     }
 
-    // ✅ Tap to show controls anytime
     document.addEventListener("click", showControlsTemporarily);
     document.addEventListener("touchstart", showControlsTemporarily);
 
-    // Init
     showNumbers();
 </script>
 
