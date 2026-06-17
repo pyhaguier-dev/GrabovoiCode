@@ -5,29 +5,31 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Grabovoi code</title>
+<title>Grabovoi codes</title>
 
 <style>
     body {
         font-family: Arial, sans-serif;
         text-align: center;
         margin-top: 30px;
-        transition: background-color 0.005s ease; /* ✅ smooth color change */
     }
 
+    /* Message */
     #message {
-         color: black;
+       color: blue;
         font-size: clamp(16px, 4vw, 20px);
         margin-bottom: 10px;
         height: 24px;
     }
 
+    /* Numbers */
     #numbers {
-        color: black; /* ✅ always blue */
+        color: blue;
         font-size: clamp(24px, 8vw, 60px);
         margin: 15px;
     }
 
+    /* Controls */
     #controls {
         margin-top: 30px;
         transition: opacity 0.5s;
@@ -53,6 +55,7 @@
         text-align: center;
     }
 
+    /* Timer button states */
     #timerBtn {
         background-color: #eee;
     }
@@ -78,12 +81,12 @@
 
     <br><br>
 
-    Duration (ms):
+    Timer (ms):
     <input type="number" id="timerInput" value="127.7139208">
 </div>
 
 <script>
-       const numbers = [514,88888488888,918948181,1814321,5186923,519606901319,8240692,396815,918197185,88889888878888,49819431947,1488514,5148584,5862043,210250300,2937853,697706258,5893240,9988771,54321893,5185213,8124567,8125432,5484548,1456891,8851464,598617918491,8686694,5749285,498217218227,8121596];
+   const numbers = [514,88888488888,918948181,1814321,5186923,519606901319,8240692,396815,918197185,88889888878888,49819431947,1488514,5148584,5862043,210250300,2937853,697706258,5893240,9988771,54321893,5185213,8124567,8125432,5484548,1456891,8851464,598617918491,8686694,5749285,498217218227,8121596];
 
     let index = 0;
     const displayCount = 1;
@@ -93,21 +96,8 @@
     let isTimerRunning = false;
     let hideControlsTimeout;
 
-    // ✅ 7 fixed background colors (red → purple)
-    const bgColors = [
-        "#FF3B30", // red
-        "#FF9500", // orange
-        "#FFCC00", // yellow
-        "#34C759", // green
-        "#007AFF", // blue
-        "#5856D6", // indigo
-        "#AF52DE"  // purple
-    ];
-
-    let bgColorIndex = 0;
-
     function getMessage(slice) {
-              if (slice.includes(514)) return "1 - Rajeunissment";
+                     if (slice.includes(514)) return "1 - Rajeunissment";
  if (slice.includes(88888488888)) return "2 - Rétablir la santé";
 if (slice.includes(918948181)) return "3 - Auto-guérison";
         if (slice.includes(1814321)) return "4 - Santé parfaite";
@@ -144,11 +134,6 @@ if (slice.includes(8121596)) return "31 - Muscles";
 
     function showNumbers() {
         const slice = numbers.slice(index, index + displayCount);
-
-        // ✅ Change background color every time numbers change
-        document.body.style.backgroundColor = bgColors[bgColorIndex];
-        bgColorIndex = (bgColorIndex + 1) % bgColors.length;
-
         document.getElementById("numbers").innerText = slice.join(", ");
 
         const messageDiv = document.getElementById("message");
@@ -198,6 +183,7 @@ if (slice.includes(8121596)) return "31 - Muscles";
         const btn = document.getElementById("timerBtn");
 
         if (timerInterval) {
+            // STOP
             stopTimer();
             showControlsTemporarily();
         } else {
@@ -209,9 +195,11 @@ if (slice.includes(8121596)) return "31 - Muscles";
 
             isTimerRunning = true;
 
+            // ✅ Activate button
             btn.classList.add("active");
-            btn.innerText = "⏸️ En marche";
+            btn.innerText = "⏸️ En cours";
 
+            // Hide controls
             controls.classList.add("hidden");
 
             timerInterval = setInterval(() => {
@@ -232,8 +220,10 @@ if (slice.includes(8121596)) return "31 - Muscles";
         isTimerRunning = false;
 
         const btn = document.getElementById("timerBtn");
+
+        // ✅ Reset button
         btn.classList.remove("active");
-        btn.innerText = "⏱️ Auto";
+        btn.innerText = "⏱️ En cours";
     }
 
     function showControlsTemporarily() {
@@ -248,9 +238,11 @@ if (slice.includes(8121596)) return "31 - Muscles";
         }, 5000);
     }
 
+    // ✅ Always allow showing controls on tap
     document.addEventListener("click", showControlsTemporarily);
     document.addEventListener("touchstart", showControlsTemporarily);
 
+    // Initial display
     showNumbers();
 </script>
 
